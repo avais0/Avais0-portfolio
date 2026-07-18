@@ -7,8 +7,8 @@ function isAuthorized(request) {
     return false;
   }
   
-  const token = authHeader.substring(7);
-  const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+  const token = authHeader.substring(7).trim();
+  const adminPassword = (process.env.ADMIN_PASSWORD || 'admin123').trim();
   return token === adminPassword;
 }
 
