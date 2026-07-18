@@ -75,7 +75,8 @@ export default function AdminPage() {
         localStorage.setItem("admin_token", password);
         fetchMessages(password);
       } else {
-        setLoginError("Invalid password. Please try again.");
+        const data = await res.json();
+        setLoginError(data.message || data.error || "Invalid password. Please try again.");
       }
     } catch (err) {
       setLoginError("Connection error. Could not authenticate.");

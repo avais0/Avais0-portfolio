@@ -14,7 +14,14 @@ function isAuthorized(request) {
 
 export async function GET(request) {
   if (!isAuthorized(request)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const envVarExists = !!process.env.ADMIN_PASSWORD;
+    return NextResponse.json({ 
+      error: 'Unauthorized', 
+      envVarExists,
+      message: envVarExists 
+        ? 'Invalid password. Please verify the characters.' 
+        : 'Password is not set in Vercel Environment Variables. Please set ADMIN_PASSWORD in your Vercel Dashboard, then Redeploy.'
+    }, { status: 401 });
   }
 
   try {
