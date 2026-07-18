@@ -103,6 +103,15 @@ export default function Home() {
       image: "/assets/ecommerce.png"
     },
     {
+      title: "MaintainIQ - AI Asset History",
+      type: "fullstack",
+      description: "An AI-powered QR maintenance and asset history platform designed to centralize organization assets, enable instant reportable issues via QR codes, and provide AI-driven diagnostic recommendations.",
+      tags: ["React", "Express", "Node.js", "MongoDB", "QR Scanner", "AI Diagnostics"],
+      github: "https://github.com/avais0",
+      live: "https://maintainiq-frontend-smit.vercel.app",
+      image: "/assets/maintainiq.png"
+    },
+    {
       title: "SkyFlow Weather Application",
       type: "frontend",
       description: "A highly responsive weather forecast application utilizing a weather API to display real-time conditions, wind speeds, humidity, and multi-day forecasts with visual animations.",
