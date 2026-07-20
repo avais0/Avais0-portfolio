@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { getMessages, toggleRead, deleteMessage } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 function isAuthorized(request) {
   const authHeader = request.headers.get('authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
