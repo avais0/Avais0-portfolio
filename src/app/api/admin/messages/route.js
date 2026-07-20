@@ -3,6 +3,40 @@ import { getMessages, toggleRead, deleteMessage } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
+function getAdminPasswordConfig() {
+  const keys = Object.keys(process.env);
+  
+  // Find case-insensitive match for ADMIN_PASSWORD
+  const exactMatch = keys.find(k => k.toUpperCase() === 'ADMIN_PASSWORD');
+  if (exactMatch) {
+    return {
+      password: process.env[exactMatch].trim(),
+      exists: true,
+      keyUsed: exactMatch
+    };
+  }
+
+  // Find any key containing "PASSWORD" and "ADMIN" or "AVAIS"
+  const broadMatch = keys.find(k => {
+    const uk = k.toUpperCase();
+    return uk.includes('PASSWORD') && (uk.includes('ADMIN') || uk.includes('AVAIS') || uk.includes('PORTFOLIO'));
+  });
+  if (broadMatch) {
+    return {
+      password: process.env[broadMatch].trim(),
+      exists: true,
+      keyUsed: broadMatch
+    };
+  }
+
+  // Fallback default
+  return {
+    password: 'admin123',
+    exists: false,
+    keyUsed: null
+  };
+}
+
 function isAuthorized(request) {
   const authHeader = request.headers.get('authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -10,19 +44,32 @@ function isAuthorized(request) {
   }
   
   const token = authHeader.substring(7).trim();
-  const adminPassword = (process.env.ADMIN_PASSWORD || 'admin123').trim();
-  return token === adminPassword;
+  const config = getAdminPasswordConfig();
+  return token === config.password;
 }
 
 export async function GET(request) {
+  const config = getAdminPasswordConfig();
+  
   if (!isAuthorized(request)) {
-    const envVarExists = !!process.env.ADMIN_PASSWORD;
+    // List all safe key names to inspect what is configured
+    const safeKeys = Object.keys(process.env).filter(k => 
+      !k.startsWith('VC_') && 
+      !k.startsWith('VERCEL_') && 
+      !k.startsWith('AWS_') && 
+      !k.startsWith('npm_') && 
+      !k.startsWith('NODE_') &&
+      k !== 'PATH'
+    );
+
     return NextResponse.json({ 
       error: 'Unauthorized', 
-      envVarExists,
-      message: envVarExists 
-        ? 'Invalid password. Please verify the characters.' 
-        : 'Password is not set in Vercel Environment Variables. Please set ADMIN_PASSWORD in your Vercel Dashboard, then Redeploy.'
+      envVarExists: config.exists,
+      keyUsed: config.keyUsed,
+      availableKeys: safeKeys,
+      message: config.exists 
+        ? `Invalid password.` 
+        : `Password is not set in Vercel. Checked keys: [${safeKeys.join(', ')}]. Please configure ADMIN_PASSWORD in your Vercel Dashboard and Redeploy.`
     }, { status: 401 });
   }
 
