@@ -91,6 +91,197 @@ export default function Home() {
   const whatsappMessage = "Hi Avais, I visited your portfolio and would love to connect!";
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
 
+  // --- TYPEWRITER CAROUSEL ---
+  const roles = ["Full Stack Developer", "Next.js & React Specialist", "Computer Science Student"];
+  const [roleText, setRoleText] = useState("");
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [typingSpeed, setTypingSpeed] = useState(150);
+
+  useEffect(() => {
+    let timer;
+    const currentFullText = roles[roleIndex];
+
+    const handleType = () => {
+      if (!isDeleting) {
+        setRoleText(currentFullText.substring(0, roleText.length + 1));
+        setTypingSpeed(100);
+
+        if (roleText === currentFullText) {
+          setTypingSpeed(2000);
+          setIsDeleting(true);
+        }
+      } else {
+        setRoleText(currentFullText.substring(0, roleText.length - 1));
+        setTypingSpeed(50);
+
+        if (roleText === "") {
+          setIsDeleting(false);
+          setRoleIndex((prev) => (prev + 1) % roles.length);
+          setTypingSpeed(500);
+        }
+      }
+    };
+
+    timer = setTimeout(handleType, typingSpeed);
+    return () => clearTimeout(timer);
+  }, [roleText, isDeleting, roleIndex, typingSpeed]);
+
+  // --- THEME CUSTOMIZER ---
+  const themes = [
+    {
+      name: "Cyber Violet",
+      id: "violet",
+      colors: {
+        "--accent-purple": "#a855f7",
+        "--accent-blue": "#3b82f6",
+        "--accent-cyan": "#06b6d4",
+        "--grad-primary": "linear-gradient(135deg, #3b82f6 0%, #a855f7 50%, #f43f5e 100%)",
+        "--accent-rose": "#f43f5e",
+        "--bg-glow-rgb": "168, 85, 247"
+      }
+    },
+    {
+      name: "Emerald Matrix",
+      id: "matrix",
+      colors: {
+        "--accent-purple": "#10b981",
+        "--accent-blue": "#059669",
+        "--accent-cyan": "#34d399",
+        "--grad-primary": "linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%)",
+        "--accent-rose": "#6ee7b7",
+        "--bg-glow-rgb": "16, 185, 129"
+      }
+    },
+    {
+      name: "Sunset Amber",
+      id: "sunset",
+      colors: {
+        "--accent-purple": "#f59e0b",
+        "--accent-blue": "#ea580c",
+        "--accent-cyan": "#fbbf24",
+        "--grad-primary": "linear-gradient(135deg, #ea580c 0%, #f59e0b 50%, #fbbf24 100%)",
+        "--accent-rose": "#fcd34d",
+        "--bg-glow-rgb": "245, 158, 11"
+      }
+    },
+    {
+      name: "Crimson Rose",
+      id: "rose",
+      colors: {
+        "--accent-purple": "#f43f5e",
+        "--accent-blue": "#be123c",
+        "--accent-cyan": "#fda4af",
+        "--grad-primary": "linear-gradient(135deg, #be123c 0%, #f43f5e 50%, #fda4af 100%)",
+        "--accent-rose": "#fda4af",
+        "--bg-glow-rgb": "244, 63, 94"
+      }
+    }
+  ];
+
+  const [activeTheme, setActiveTheme] = useState("violet");
+  const [themePanelOpen, setThemePanelOpen] = useState(false);
+
+  const applyTheme = (themeId) => {
+    setActiveTheme(themeId);
+    const selected = themes.find(t => t.id === themeId);
+    if (selected) {
+      Object.entries(selected.colors).forEach(([property, value]) => {
+        document.documentElement.style.setProperty(property, value);
+      });
+      localStorage.setItem("portfolio_theme", themeId);
+    }
+  };
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("portfolio_theme");
+    if (savedTheme) {
+      applyTheme(savedTheme);
+    }
+  }, []);
+
+  // --- DEVELOPER TERMINAL ---
+  const [termInput, setTermInput] = useState("");
+  const [termLines, setTermLines] = useState([
+    { text: "Avais Ahmed Mehdi - DevConsole v1.0.0", type: "system" },
+    { text: "Type 'help' to see list of available commands.", type: "system" },
+    { text: "", type: "empty" }
+  ]);
+
+  const handleTerminalSubmit = (e) => {
+    e.preventDefault();
+    const cmd = termInput.trim().toLowerCase();
+    if (!cmd) return;
+
+    const newLines = [...termLines, { text: `visitor@portfolio:~$ ${termInput}`, type: "prompt-output" }];
+
+    switch (cmd) {
+      case "help":
+        newLines.push(
+          { text: "Available commands:", type: "success" },
+          { text: "  about    - Brief biography of Avais", type: "success" },
+          { text: "  skills   - List detailed technical stack", type: "success" },
+          { text: "  projects - Show highlighted projects & links", type: "success" },
+          { text: "  contact  - Show mobile and email info", type: "success" },
+          { text: "  whatsapp - Start direct WhatsApp conversation", type: "success" },
+          { text: "  clear    - Clear console history", type: "success" }
+        );
+        break;
+      case "about":
+        newLines.push(
+          { text: "Avais Ahmed Mehdi is a computer science undergraduate student at Federal Urdu University Karachi.", type: "info" },
+          { text: "Passionate about full-stack web development, building high-performance APIs, and interactive client UIs.", type: "info" }
+        );
+        break;
+      case "skills":
+        newLines.push(
+          { text: "Technical Skills Profile:", type: "success" },
+          { text: "  Frontend: React, Next.js, Vite, HTML5, CSS3, JavaScript, TailwindCSS", type: "info" },
+          { text: "  Backend: Node.js, Express.js, Serverless Routes", type: "info" },
+          { text: "  Database: MongoDB, JSON Databases", type: "info" },
+          { text: "  Tools: Git, GitHub, NPM, Vercel, VS Code", type: "info" }
+        );
+        break;
+      case "projects":
+        newLines.push(
+          { text: "Highlighted Projects:", type: "success" },
+          { text: "  1. MaintainIQ - AI QR Asset Tracker [Live: maintainiq-frontend-smit.vercel.app]", type: "info" },
+          { text: "  2. MERN E-Commerce [GitHub: MERN-Stack-Ecommerce-website]", type: "info" },
+          { text: "  3. SkyFlow Weather [Live: weather-app-flame-one-42.vercel.app]", type: "info" },
+          { text: "  4. Expense Tracker [Live: avais0.github.io/Bill-generator]", type: "info" }
+        );
+        break;
+      case "contact":
+        newLines.push(
+          { text: "Contact Details:", type: "success" },
+          { text: "  Phone/WhatsApp: +92 327 8228159", type: "info" },
+          { text: "  Email: Send a message through the form below!", type: "info" },
+          { text: "  Location: Karachi, Pakistan", type: "info" }
+        );
+        break;
+      case "whatsapp":
+        newLines.push({ text: "Opening direct WhatsApp link...", type: "system" });
+        if (typeof window !== "undefined") {
+          window.open(`https://wa.me/${whatsappNumber}?text=Hi Avais, I visited your DevConsole!`, "_blank");
+        }
+        break;
+      case "clear":
+        setTermLines([]);
+        setTermInput("");
+        return;
+      default:
+        newLines.push({ text: `Command not found: '${cmd}'. Type 'help' for suggestions.`, type: "error" });
+    }
+
+    setTermLines(newLines);
+    setTermInput("");
+
+    setTimeout(() => {
+      const termBody = document.getElementById("terminal-body");
+      if (termBody) termBody.scrollTop = termBody.scrollHeight;
+    }, 50);
+  };
+
   // Projects list with images
   const projects = [
     {
@@ -146,6 +337,32 @@ export default function Home() {
 
   return (
     <>
+      {/* Theme Customizer */}
+      <div className="theme-customizer">
+        <button 
+          className="theme-toggle-btn" 
+          onClick={() => setThemePanelOpen(!themePanelOpen)}
+          title="Customize Theme Color"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+        <div className={`theme-panel ${themePanelOpen ? "open" : ""}`}>
+          <div className="theme-panel-title">Choose Accent</div>
+          <div className="theme-options">
+            {themes.map((t) => (
+              <button 
+                key={t.id} 
+                className={`theme-opt-btn ${activeTheme === t.id ? "active" : ""}`}
+                onClick={() => applyTheme(t.id)}
+              >
+                <span className={`theme-dot-indicator theme-dot-${t.id}`}></span>
+                {t.name}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
       {/* Background Orbs */}
       <div className="glow-orb glow-orb-purple"></div>
       <div className="glow-orb glow-orb-blue"></div>
@@ -235,6 +452,10 @@ export default function Home() {
               <h1 className="hero-title">
                 Hi, I am <span className="text-gradient-accent">Avais Ahmed Mehdi</span>
               </h1>
+              <div className="hero-role-carousel" style={{ fontSize: "1.5rem", fontWeight: "600", color: "var(--accent-cyan)", margin: "0.5rem 0 1.5rem 0", minHeight: "2.25rem", display: "flex", alignItems: "center" }}>
+                <span>I'm a&nbsp;</span>
+                <span style={{ borderRight: "2px solid var(--accent-cyan)", paddingRight: "4px" }}>{roleText}</span>
+              </div>
               <p className="hero-description">
                 I am an undergraduate Computer Science student at Urdu University Karachi. 
                 I specialize in full-stack web development, building responsive, interactive, 
@@ -342,6 +563,49 @@ export default function Home() {
                   <h4 className="timeline-title">Ba'that High School</h4>
                   <div className="timeline-inst">Matriculation Secondary Education - Faisalabad</div>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Dev Terminal */}
+          <div className="dev-terminal-container">
+            <div className="terminal-window">
+              <div className="terminal-header">
+                <div className="terminal-buttons">
+                  <span className="term-btn red"></span>
+                  <span className="term-btn yellow"></span>
+                  <span className="term-btn green"></span>
+                </div>
+                <div className="terminal-title">devconsole@avais-mehdi: ~</div>
+                <div style={{ width: "42px" }}></div>
+              </div>
+              <div className="terminal-body" id="terminal-body">
+                <div className="term-welcome">
+                  Welcome to Avais Ahmed Mehdi's Interactive Terminal.
+                  Type 'help' to see list of available commands.
+                </div>
+                {termLines.map((line, idx) => (
+                  <div key={idx} className={`term-line ${line.type}`}>
+                    {line.text}
+                  </div>
+                ))}
+                <form onSubmit={handleTerminalSubmit} className="term-line prompt">
+                  <span className="term-symbol">visitor@portfolio:~$</span>
+                  <div className="term-input-wrapper">
+                    <input 
+                      type="text" 
+                      className="term-input" 
+                      value={termInput} 
+                      onChange={(e) => setTermInput(e.target.value)}
+                      placeholder="Type a command..."
+                      autoComplete="off"
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                      spellCheck="false"
+                    />
+                    <span className="term-cursor-blink">_</span>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
