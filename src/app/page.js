@@ -20,10 +20,12 @@ export default function Home() {
   });
 
   const [projectFilter, setProjectFilter] = useState("all");
+  const [activeCertImage, setActiveCertImage] = useState(null);
+  const [activeCertTitle, setActiveCertTitle] = useState("");
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["home", "about", "skills", "projects", "contact"];
+      const sections = ["home", "about", "skills", "projects", "certifications", "contact"];
       const scrollPosition = window.scrollY + 200;
 
       for (const section of sections) {
@@ -331,6 +333,30 @@ export default function Home() {
     }
   ];
 
+  // Certifications list
+  const certifications = [
+    {
+      title: "Coding Night-2026 (Hackathon)",
+      issuer: "Saylani Welfare International Trust (SMIT)",
+      date: "February 2026",
+      desc: "Awarded for successful participation in the intensive 9-hour Coding Night-2026 Hackathon under the SMIT education department.",
+      id: "SMIT/2026/HACKATHON/345853",
+      duration: "9 Hours",
+      image: "/assets/cert_smit_hackathon.png",
+      pdf: "/assets/cert_smit_hackathon.pdf"
+    },
+    {
+      title: "Smart Professional-Web Application Development with Python",
+      issuer: "Aptech Computer Education",
+      date: "March 2024",
+      desc: "Completed professional certification course covering advanced web application development with Python, scoring distinction grades.",
+      id: "Serial No: 524523",
+      duration: "Distinction Grade",
+      image: "/assets/cert_aptech.jpg",
+      pdf: "/assets/cert_aptech.pdf"
+    }
+  ];
+
   const filteredProjects = projects.filter(
     (p) => projectFilter === "all" || p.type === projectFilter
   );
@@ -409,6 +435,15 @@ export default function Home() {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Projects
+              </a>
+            </li>
+            <li>
+              <a
+                href="#certifications"
+                className={`nav-link ${activeSection === "certifications" ? "active" : ""}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Certifications
               </a>
             </li>
             <li>
@@ -769,6 +804,84 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Certifications Section */}
+      <section id="certifications" className="section">
+        <div className="container">
+          <div className="section-header">
+            <div className="section-subtitle">Credentials</div>
+            <h2 className="section-title text-gradient">Certifications</h2>
+          </div>
+
+          <div className="certs-grid">
+            {certifications.map((cert, idx) => (
+              <div key={idx} className="glass-card cert-card" style={{ padding: "0" }}>
+                <div 
+                  className="cert-img-wrapper" 
+                  onClick={() => {
+                    setActiveCertImage(cert.image);
+                    setActiveCertTitle(cert.title);
+                  }}
+                  title="Click to Zoom Preview"
+                >
+                  <Image 
+                    className="cert-img" 
+                    src={cert.image} 
+                    alt={`${cert.title} Preview`}
+                    width={400}
+                    height={220}
+                    unoptimized
+                  />
+                  <div className="cert-img-overlay">
+                    <div className="cert-zoom-icon">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="cert-card-content">
+                  <span className="cert-issuer">{cert.issuer}</span>
+                  <h3 className="cert-title">{cert.title}</h3>
+                  <span className="cert-date">{cert.date}</span>
+                  <p className="cert-desc">{cert.desc}</p>
+
+                  <div className="cert-meta-info">
+                    <div className="cert-meta-row">
+                      <span className="cert-meta-label">Credential ID</span>
+                      <span className="cert-meta-val">{cert.id}</span>
+                    </div>
+                    <div className="cert-meta-row">
+                      <span className="cert-meta-label">Details</span>
+                      <span className="cert-meta-val">{cert.duration}</span>
+                    </div>
+                  </div>
+
+                  <div className="cert-actions">
+                    <button 
+                      className="btn btn-secondary" 
+                      style={{ width: "100%", padding: "0.5rem 1rem", fontSize: "0.9rem" }}
+                      onClick={() => {
+                        setActiveCertImage(cert.image);
+                        setActiveCertTitle(cert.title);
+                      }}
+                    >
+                      View Certificate
+                    </button>
+                    <a 
+                      href={cert.pdf} 
+                      className="btn btn-primary" 
+                      style={{ width: "100%", padding: "0.5rem 1rem", fontSize: "0.9rem", textAlign: "center", display: "inline-block" }}
+                      download
+                    >
+                      Download PDF
+                    </a>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Contact Section */}
       <section id="contact" className="section" style={{ backgroundColor: "var(--bg-secondary)" }}>
         <div className="container">
@@ -952,6 +1065,24 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Certificate Modal Overlay */}
+      {activeCertImage && (
+        <div className={`cert-modal ${activeCertImage ? "open" : ""}`} onClick={() => setActiveCertImage(null)}>
+          <div className="cert-modal-container" onClick={(e) => e.stopPropagation()}>
+            <div className="cert-modal-header">
+              <span className="cert-modal-title">{activeCertTitle}</span>
+              <button className="cert-modal-close-btn" onClick={() => setActiveCertImage(null)} aria-label="Close modal">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>
+            <div className="cert-modal-body">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img className="cert-modal-img" src={activeCertImage} alt="Certificate Zoomed Preview" />
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
