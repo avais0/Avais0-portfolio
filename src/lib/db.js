@@ -1,7 +1,8 @@
 import fs from 'fs/promises';
 import path from 'path';
 
-const DB_DIR = path.join(process.cwd(), 'src', 'data');
+const isVercel = !!process.env.VERCEL;
+const DB_DIR = isVercel ? '/tmp' : path.join(process.cwd(), 'src', 'data');
 const DB_PATH = path.join(DB_DIR, 'messages.json');
 
 async function ensureDb() {

@@ -4,9 +4,28 @@ import { getMessages, toggleRead, deleteMessage } from '@/lib/db';
 export const dynamic = 'force-dynamic';
 
 function getAdminPasswordConfig() {
+  // Directly check the exact names we expect, since bundlers strip Object.keys(process.env) at compile-time on Vercel
+  const directKeys = [
+    'ADMIN_PASSWORD', 
+    'admin_password', 
+    'Admin_Password', 
+    'NEXT_PUBLIC_ADMIN_PASSWORD',
+    'next_public_admin_password'
+  ];
+
+  for (const key of directKeys) {
+    if (process.env[key] !== undefined && process.env[key] !== '') {
+      return {
+        password: process.env[key].trim(),
+        exists: true,
+        keyUsed: key
+      };
+    }
+  }
+
   const keys = Object.keys(process.env);
   
-  // Find case-insensitive match for ADMIN_PASSWORD
+  // Find case-insensitive match for ADMIN_PASSWORD in keys list as fallback
   const exactMatch = keys.find(k => k.toUpperCase() === 'ADMIN_PASSWORD');
   if (exactMatch) {
     return {
