@@ -302,7 +302,9 @@ export default function Home() {
       tags: ["React", "Express", "Node.js", "MongoDB", "QR Scanner", "AI Diagnostics"],
       github: "https://github.com/avais0",
       live: "https://maintainiq-frontend-smit.vercel.app",
-      image: "/assets/maintainiq.png"
+      image: "/assets/maintainiq.png",
+      badge: "SMIT Hackathon",
+      certificate: "/assets/cert_smit_hackathon.pdf"
     },
     {
       title: "SkyFlow Weather Application",
@@ -763,6 +765,21 @@ export default function Home() {
                     <span className="project-type">
                       {project.type === "fullstack" ? "Full Stack" : "Frontend"}
                     </span>
+                    {project.badge && (
+                      <span className="project-badge" style={{
+                        fontSize: "0.75rem",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em",
+                        background: "rgba(6, 182, 212, 0.15)",
+                        color: "var(--accent-cyan)",
+                        padding: "0.25rem 0.6rem",
+                        borderRadius: "4px",
+                        fontWeight: "600",
+                        marginLeft: "0.5rem"
+                      }}>
+                        {project.badge}
+                      </span>
+                    )}
                   </div>
                   <h3 className="project-title">{project.title}</h3>
                   <p className="project-desc">{project.description}</p>
@@ -794,6 +811,18 @@ export default function Home() {
                       >
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                         Live Demo
+                      </a>
+                    )}
+                    {project.certificate && (
+                      <a
+                        href={project.certificate}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="project-link"
+                        style={{ color: "var(--accent-cyan)" }}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        Certificate
                       </a>
                     )}
                   </div>
