@@ -356,6 +356,18 @@ export default function Home() {
       duration: "Distinction Grade",
       image: "/assets/cert_aptech.jpg",
       pdf: "/assets/cert_aptech.pdf"
+    },
+    {
+      title: "Frontend Development Virtual Internship & LOR",
+      issuer: "CodeAlpha",
+      date: "August 2026",
+      desc: "Completed a 1-month intensive Frontend Development Virtual Internship Program at CodeAlpha, designing responsive interfaces and earning a Letter of Recommendation (LOR).",
+      id: "Student ID: CA/DF1/210039",
+      duration: "1 Month (Jul - Aug 2026)",
+      image: "/assets/cert_codealpha.jpg",
+      pdf: "/assets/cert_codealpha.pdf",
+      image2: "/assets/lor_codealpha.jpg",
+      pdf2: "/assets/lor_codealpha.pdf"
     }
   ];
 
@@ -884,25 +896,50 @@ export default function Home() {
                     </div>
                   </div>
 
-                  <div className="cert-actions">
-                    <button 
-                      className="btn btn-secondary" 
-                      style={{ width: "100%", padding: "0.5rem 1rem", fontSize: "0.9rem" }}
-                      onClick={() => {
-                        setActiveCertImage(cert.image);
-                        setActiveCertTitle(cert.title);
-                      }}
-                    >
-                      View Certificate
-                    </button>
-                    <a 
-                      href={cert.pdf} 
-                      className="btn btn-primary" 
-                      style={{ width: "100%", padding: "0.5rem 1rem", fontSize: "0.9rem", textAlign: "center", display: "inline-block" }}
-                      download
-                    >
-                      Download PDF
-                    </a>
+                  <div className="cert-actions" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                    <div style={{ display: "flex", gap: "0.5rem", width: "100%" }}>
+                      <button 
+                        className="btn btn-secondary" 
+                        style={{ flex: 1, padding: "0.5rem 0.5rem", fontSize: "0.85rem", whiteSpace: "nowrap" }}
+                        onClick={() => {
+                          setActiveCertImage(cert.image);
+                          setActiveCertTitle(cert.title);
+                        }}
+                      >
+                        {cert.image2 ? "View Certificate" : "View"}
+                      </button>
+                      <a 
+                        href={cert.pdf} 
+                        className="btn btn-primary" 
+                        style={{ flex: 1, padding: "0.5rem 0.5rem", fontSize: "0.85rem", textAlign: "center", whiteSpace: "nowrap", display: "inline-block" }}
+                        download
+                      >
+                        {cert.pdf2 ? "Download PDF" : "Download"}
+                      </a>
+                    </div>
+
+                    {cert.pdf2 && (
+                      <div style={{ display: "flex", gap: "0.5rem", width: "100%" }}>
+                        <button 
+                          className="btn btn-secondary" 
+                          style={{ flex: 1, padding: "0.5rem 0.5rem", fontSize: "0.85rem", whiteSpace: "nowrap" }}
+                          onClick={() => {
+                            setActiveCertImage(cert.image2);
+                            setActiveCertTitle(cert.title + " (LOR)");
+                          }}
+                        >
+                          View LOR
+                        </button>
+                        <a 
+                          href={cert.pdf2} 
+                          className="btn btn-primary" 
+                          style={{ flex: 1, padding: "0.5rem 0.5rem", fontSize: "0.85rem", textAlign: "center", whiteSpace: "nowrap", display: "inline-block" }}
+                          download
+                        >
+                          Download LOR
+                        </a>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
