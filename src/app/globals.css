@@ -1543,4 +1543,41 @@ textarea.form-input {
   border: 1px solid var(--border-glass);
 }
 
+/* Social Links */
+.social-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.social-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-glass);
+  color: var(--text-secondary);
+  transition: var(--transition-fast);
+  cursor: pointer;
+}
+
+.social-icon-btn:hover {
+  background: var(--grad-primary);
+  color: #fff;
+  border-color: transparent;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(168, 85, 247, 0.3);
+}
+
+.social-icon-btn svg {
+  transition: transform 0.3s ease;
+}
+
+.social-icon-btn:hover svg {
+  transform: scale(1.1);
+}
+
 
